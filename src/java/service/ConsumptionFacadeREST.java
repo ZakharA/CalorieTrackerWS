@@ -6,10 +6,13 @@
 package service;
 
 import ctrackerws.Consumption;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -83,9 +86,45 @@ public class ConsumptionFacadeREST extends AbstractFacade<Consumption> {
         return String.valueOf(super.count());
     }
 
+    @GET
+    @Path("findByUserId/{userId}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Consumption> findByUserId(@PathParam("userId") Integer userid) {
+        Query query = em.createNamedQuery("Consumption.findByUserId");
+        query.setParameter("userId", userid);
+        return query.getResultList();
+    }
+
+    @GET
+    @Path("findByFoodId/{foodId}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Consumption> findByFoodId(@PathParam("foodId") Integer foodId) {
+        Query query = em.createNamedQuery("Consumption.findByFoodId");
+        query.setParameter("foodId", foodId);
+        return query.getResultList();
+    }
+
+    @GET
+    @Path("findByDate/{date}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Consumption> findByDate(@PathParam("date") String date) throws ParseException {
+        Query query = em.createNamedQuery("Consumption.findByDate");
+        query.setParameter("date", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(date));
+        return query.getResultList();
+    }
+
+    @GET
+    @Path("findByNumberOfServings/{numberOfServings}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Consumption> findByNumberOfServings(@PathParam("numberOfServings") Integer numberOfServings) {
+        Query query = em.createNamedQuery("Consumption.findByNumberOfServings");
+        query.setParameter("numberOfServings", numberOfServings);
+        return query.getResultList();
+    }
+
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }

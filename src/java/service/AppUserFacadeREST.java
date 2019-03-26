@@ -6,10 +6,13 @@
 package service;
 
 import ctrackerws.AppUser;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -83,9 +86,108 @@ public class AppUserFacadeREST extends AbstractFacade<AppUser> {
         return String.valueOf(super.count());
     }
 
+    @GET
+    @Path("findByName/{name}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<AppUser> findByName(@PathParam("name") String name) {
+        Query query = em.createNamedQuery("AppUser.findByName");
+        query.setParameter("name", name);
+        return query.getResultList();
+    }
+
+    @GET
+    @Path("findBySurname/{surname}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<AppUser> findBySurname(@PathParam("surname") String surname) {
+        Query query = em.createNamedQuery("AppUser.findBySurname");
+        query.setParameter("surname", surname);
+        return query.getResultList();
+    }
+
+    @GET
+    @Path("findByEmail/{email}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<AppUser> findByEmail(@PathParam("email") String email) {
+        Query query = em.createNamedQuery("AppUser.findByEmail");
+        query.setParameter("email", email);
+        return query.getResultList();
+    }
+
+    @GET
+    @Path("findByDob/{dob}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<AppUser> findByDob(@PathParam("dob") String dob) throws ParseException {
+        Query query = em.createNamedQuery("AppUser.findByDob");
+        query.setParameter("dob", new SimpleDateFormat("yyyy-MM-dd").parse(dob));
+        return query.getResultList();
+    }
+
+    @GET
+    @Path("findByHeight/{height}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<AppUser> findByHeight(@PathParam("height") Double height) {
+        Query query = em.createNamedQuery("AppUser.findByHeight");
+        query.setParameter("height", height);
+        return query.getResultList();
+    }
+
+    @GET
+    @Path("findByWeight/{weight}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<AppUser> findByWeight(@PathParam("weight") Double weight) {
+        Query query = em.createNamedQuery("AppUser.findByWeight");
+        query.setParameter("weight", weight);
+        return query.getResultList();
+    }
+
+    @GET
+    @Path("findByGender/{gender}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<AppUser> findByGender(@PathParam("gender") String gender) {
+        Query query = em.createNamedQuery("AppUser.findByGender");
+        query.setParameter("gender", gender);
+        return query.getResultList();
+    }
+
+    @GET
+    @Path("findByAddress/{address}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<AppUser> findByAddress(@PathParam("address") String address) {
+        Query query = em.createNamedQuery("AppUser.findByAddress");
+        query.setParameter("address", address);
+        return query.getResultList();
+    }
+
+    @GET
+    @Path("findByPostcode/{postcode}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<AppUser> findByPostcode(@PathParam("postcode") String postcode) {
+        Query query = em.createNamedQuery("AppUser.findByPostcode");
+        query.setParameter("postcode", postcode);
+        return query.getResultList();
+    }
+
+    @GET
+    @Path("findByLevelOfActivity/{levelOfActivity}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<AppUser> findByLevelOfActivity(@PathParam("levelOfActivity") Integer levelOfActivity) {
+        Query query = em.createNamedQuery("AppUser.findByLevelOfActivity");
+        query.setParameter("levelOfActivity", levelOfActivity);
+        return query.getResultList();
+    }
+
+    @GET
+    @Path("findByStepsPerMile/{stepsPerMile}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<AppUser> findByStepsPerMile(@PathParam("stepsPerMile") Integer stepsPerMile) {
+        Query query = em.createNamedQuery("AppUser.findByStepsPerMile");
+        query.setParameter("stepsPerMile", stepsPerMile);
+        return query.getResultList();
+    }
+
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }

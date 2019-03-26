@@ -6,10 +6,13 @@
 package service;
 
 import ctrackerws.Food;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -83,9 +86,63 @@ public class FoodFacadeREST extends AbstractFacade<Food> {
         return String.valueOf(super.count());
     }
 
+    @GET
+    @Path("findByName/{name}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Food> findByName(@PathParam("name") String name) {
+        Query query = em.createNamedQuery("Food.findByName");
+        query.setParameter("name", name);
+        return query.getResultList();
+    }
+
+    @GET
+    @Path("findByCategory/{category}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Food> findByCategory(@PathParam("category") String category) {
+        Query query = em.createNamedQuery("Food.findByCategory");
+        query.setParameter("category", category);
+        return query.getResultList();
+    }
+
+    @GET
+    @Path("findByCalorieAmount/{calorieAmount}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Food> findByCalorieAmount(@PathParam("calorieAmount") Integer calorieAmount) {
+        Query query = em.createNamedQuery("Food.findByCalorieAmount");
+        query.setParameter("calorieAmount", calorieAmount);
+        return query.getResultList();
+    }
+
+    @GET
+    @Path("findByServingUnit/{servingUnit}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Food> findByServingUnit(@PathParam("servingUnit") String servingUnit) {
+        Query query = em.createNamedQuery("Food.findByServingUnit");
+        query.setParameter("servingUnit", servingUnit);
+        return query.getResultList();
+    }
+
+    @GET
+    @Path("findByServingAmount/{servingAmount}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Food> findByServingAmount(@PathParam("servingAmount") Double servingAmount) {
+        Query query = em.createNamedQuery("Food.findByServingAmount");
+        query.setParameter("servingAmount", servingAmount);
+        return query.getResultList();
+    }
+
+    @GET
+    @Path("findByFat/{fat}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Food> findByFat(@PathParam("fat") Integer fat) {
+        Query query = em.createNamedQuery("Food.findByFat");
+        query.setParameter("fat", fat);
+        return query.getResultList();
+    }
+
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }
