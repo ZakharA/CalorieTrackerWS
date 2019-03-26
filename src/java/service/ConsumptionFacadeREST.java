@@ -121,6 +121,16 @@ public class ConsumptionFacadeREST extends AbstractFacade<Consumption> {
         query.setParameter("numberOfServings", numberOfServings);
         return query.getResultList();
     }
+    
+    @GET
+    @Path("findByUseridAndFoodname/{userId}/{foodname}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Consumption> findByUseridAndFoodname(@PathParam("userId") Integer userId, @PathParam("foodname") String foodname) {
+        Query query = em.createNamedQuery("Consumption.findByUseridAndFoodname");
+        query.setParameter("userId", userId);
+        query.setParameter("foodname", foodname);
+        return query.getResultList();
+    }
 
     @Override
     protected EntityManager getEntityManager() {

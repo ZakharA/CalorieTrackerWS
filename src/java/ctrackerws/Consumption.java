@@ -32,7 +32,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Consumption.findAll", query = "SELECT c FROM Consumption c")
     , @NamedQuery(name = "Consumption.findByConsumptionId", query = "SELECT c FROM Consumption c WHERE c.consumptionId = :consumptionId")
     , @NamedQuery(name = "Consumption.findByDate", query = "SELECT c FROM Consumption c WHERE c.date = :date")
-    , @NamedQuery(name = "Consumption.findByNumberOfServings", query = "SELECT c FROM Consumption c WHERE c.numberOfServings = :numberOfServings")})
+    , @NamedQuery(name = "Consumption.findByNumberOfServings", query = "SELECT c FROM Consumption c WHERE c.numberOfServings = :numberOfServings")
+    , @NamedQuery(name = "Consumption.findByUseridAndFoodname", query = "SELECT c FROM Consumption c WHERE c.userId.userId = :userId AND c.foodId.name LIKE CONCAT('%',:foodname,'%')")})
 public class Consumption implements Serializable {
 
     private static final long serialVersionUID = 1L;
