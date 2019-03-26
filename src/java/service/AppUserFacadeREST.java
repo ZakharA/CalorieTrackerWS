@@ -189,38 +189,65 @@ public class AppUserFacadeREST extends AbstractFacade<AppUser> {
         query.setParameter("stepsPerMile", stepsPerMile);
         return query.getResultList();
     }
-    
+
     @GET
     @Path("caloriesBurnedPerStep/{userId}")
     @Produces({MediaType.TEXT_PLAIN})
-    public float caloriesBurnedPerStep(@PathParam("userId") Integer userId){
+    public float caloriesBurnedPerStep(@PathParam("userId") Integer userId) {
         AppUser user = super.find(userId);
         float userWeight = user.getWeight();
         Integer userStepsPerMile = user.getStepsPerMile();
         return (covertKgToLbs(userWeight) * 0.49f) / userStepsPerMile;
     }
-    
+
     @GET
     @Path("calculateBMR/{userId}")
     @Produces({MediaType.TEXT_PLAIN})
-    public float calculateBMR(@PathParam("userId") Integer userId){
+    public float calculateBMR(@PathParam("userId") Integer userId) {
         AppUser user = super.find(userId);
         float userWeight = user.getWeight();
         float userHeight = user.getHeight();
         String userGender = user.getGender();
         Integer userAge = calculateAge(user.getDob());
-        if (userGender.equalsIgnoreCase("Male"))
+        if (userGender.equalsIgnoreCase("Male")) {
             return (13.75f * userWeight) + (5.003f * userHeight) - (6.755f * userAge) + 66.5f;
-        else
+        } else {
             return (9.563f * userWeight) + (1.85f * userHeight) - (4.676f * userAge) + 655.1f;
+        }
     }
-    private Integer calculateAge(Date dob){
+
+    @GET
+    @Path("totalDailyCalorieBurnedAtRest/{userId}")
+    @Produces({MediaType.TEXT_PLAIN})
+    public float totalDailyCalorieBurnedAtRest(@PathParam("userId") Integer userId) {
+        AppUser user = super.find(userId);
+        Short lvl = user.getLevelOfActivity();
+        return calculateBMR(userId) * getLevelOfActivity(user.getLevelOfActivity());
+    }
+
+    private Integer calculateAge(Date dob) {
         Integer currentYear = LocalDate.now().getYear();
         Integer dobYear = dob.toInstant().atZone(ZoneId.systemDefault()).getYear();
-        return  currentYear - dobYear;
+        return currentYear - dobYear;
     }
-    
-    private float covertKgToLbs(float weight){
+
+    private float getLevelOfActivity(Short lvlOfActivity) {
+        switch (lvlOfActivity) {
+            case 5:
+                return 1.9f;
+            case 4:
+                return 1.725f;
+            case 3:
+                return 1.55f;
+            case 2:
+                return 1.375f;
+            default:
+            case 1:
+                return 1.2f;
+        }
+    }
+
+    private float covertKgToLbs(float weight) {
         return weight * 2.205f;
     }
 
