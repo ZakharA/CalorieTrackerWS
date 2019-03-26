@@ -184,6 +184,20 @@ public class AppUserFacadeREST extends AbstractFacade<AppUser> {
         query.setParameter("stepsPerMile", stepsPerMile);
         return query.getResultList();
     }
+    
+    @GET
+    @Path("caloriesBurnedPerStep/{userId}")
+    @Produces({MediaType.TEXT_PLAIN})
+    public float caloriesBurnedPerStep(@PathParam("userId") Integer userId){
+        AppUser user = super.find(userId);
+        float userWeight = user.getWeight();
+        Integer userStepsPerMile = user.getStepsPerMile();
+        return (covertKgToLbs(userWeight) * 0.49f) / userStepsPerMile;
+    }
+    
+    private float covertKgToLbs(float weight){
+        return weight * 2.205f;
+    }
 
     @Override
     protected EntityManager getEntityManager() {
