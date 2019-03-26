@@ -8,6 +8,11 @@ package service;
 import ctrackerws.AppUser;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoField;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -193,6 +198,26 @@ public class AppUserFacadeREST extends AbstractFacade<AppUser> {
         float userWeight = user.getWeight();
         Integer userStepsPerMile = user.getStepsPerMile();
         return (covertKgToLbs(userWeight) * 0.49f) / userStepsPerMile;
+    }
+    
+    @GET
+    @Path("calculateBMR/{userId}")
+    @Produces({MediaType.TEXT_PLAIN})
+    public float calculateBMR(@PathParam("userId") Integer userId){
+        AppUser user = super.find(userId);
+        float userWeight = user.getWeight();
+        float userHeight = user.getHeight();
+        String userGender = user.getGender();
+        Integer userAge = calculateAge(user.getDob());
+        if (userGender.equalsIgnoreCase("Male"))
+            return (13.75f * userWeight) + (5.003f * userHeight) - (6.755f * userAge) + 66.5f;
+        else
+            return (9.563f * userWeight) + (1.85f * userHeight) - (4.676f * userAge) + 655.1f;
+    }
+    private Integer calculateAge(Date dob){
+        Integer currentYear = LocalDate.now().getYear();
+        Integer dobYear = dob.toInstant().atZone(ZoneId.systemDefault()).getYear();
+        return  currentYear - dobYear;
     }
     
     private float covertKgToLbs(float weight){
