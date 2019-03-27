@@ -10,9 +10,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.ejb.Stateless;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -140,9 +145,40 @@ public class ReportFacadeREST extends AbstractFacade<Report> {
         return query.getResultList();
     }
 
+    @GET
+    @Path("findByUseridAndDate/{userId}/{date}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Report> findByUseridAndDate(@PathParam("userId") Integer userId, @PathParam("date") String date) throws ParseException {
+        TypedQuery<Report> query = em.createQuery("SELECT r FROM Report r WHERE r.userId.userId = :userId AND r.date = :date", Report.class);
+        query.setParameter("userId", userId);
+        query.setParameter("date", new SimpleDateFormat("yyyy-MM-dd").parse(date));
+        return query.getResultList();
+    }
+    
+    @GET
+    @Path("getCaloriesReport/{userId}/{date}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Object getCaloriesReport(@PathParam("userId") Integer userId, @PathParam("date") String date) throws ParseException{
+          List<Report> queryList = findByUseridAndDate(userId, date);
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        for (Report report : queryList) {
+            int totalCaloriesConsumed = report.getTotalCalorieConsumed();
+            float totalCaloriesBurned = report.getTotalCalorieBurned();
+            int dailyCalorieGoal = report.getDailyCalorieGoal();
+            float remainedCalories = (float) ((dailyCalorieGoal + totalCaloriesBurned) - totalCaloriesConsumed);
+            JsonObject reportObject = Json.createObjectBuilder()
+                    .add("totalCaloriesConsumed", totalCaloriesConsumed)
+                    .add("totalCaloriesBurned",  totalCaloriesBurned)
+                    .add("remainedCalories", remainedCalories).build();
+            arrayBuilder.add(reportObject);
+        }
+        JsonArray jArray = arrayBuilder.build();
+        return jArray;
+    }    
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }
