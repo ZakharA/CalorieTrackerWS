@@ -35,7 +35,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Report.findByTotalCalorieConsumed", query = "SELECT r FROM Report r WHERE r.totalCalorieConsumed = :totalCalorieConsumed")
     , @NamedQuery(name = "Report.findByTotalCalorieBurned", query = "SELECT r FROM Report r WHERE r.totalCalorieBurned = :totalCalorieBurned")
     , @NamedQuery(name = "Report.findByTotalStepsTaken", query = "SELECT r FROM Report r WHERE r.totalStepsTaken = :totalStepsTaken")
-    , @NamedQuery(name = "Report.findByDailyCalorieGoal", query = "SELECT r FROM Report r WHERE r.dailyCalorieGoal = :dailyCalorieGoal")})
+    , @NamedQuery(name = "Report.findByDailyCalorieGoal", query = "SELECT r FROM Report r WHERE r.dailyCalorieGoal = :dailyCalorieGoal")
+    , @NamedQuery(name = "Report.findByUserId", query = "SELECT r FROM Report r WHERE r.userId.userId = :userId")})
 public class Report implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -47,7 +48,7 @@ public class Report implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "DATE")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date date;
     @Basic(optional = false)
     @NotNull

@@ -10,8 +10,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoField;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -255,5 +253,5 @@ public class AppUserFacadeREST extends AbstractFacade<AppUser> {
     protected EntityManager getEntityManager() {
         return em;
     }
-
+    
 }

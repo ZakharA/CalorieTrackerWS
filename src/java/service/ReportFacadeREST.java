@@ -100,7 +100,7 @@ public class ReportFacadeREST extends AbstractFacade<Report> {
     @Produces({MediaType.APPLICATION_JSON})
     public List<Report> findByDate(@PathParam("date") String date) throws ParseException {
         Query query = em.createNamedQuery("Report.findByDate");
-        query.setParameter("date", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(date));
+        query.setParameter("date", new SimpleDateFormat("yyyy-MM-dd").parse(date));
         return query.getResultList();
     }
 
@@ -144,5 +144,5 @@ public class ReportFacadeREST extends AbstractFacade<Report> {
     protected EntityManager getEntityManager() {
         return em;
     }
-
+    
 }

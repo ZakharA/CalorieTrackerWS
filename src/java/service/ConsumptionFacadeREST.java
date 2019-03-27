@@ -8,11 +8,13 @@ package service;
 import ctrackerws.Consumption;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -109,7 +111,7 @@ public class ConsumptionFacadeREST extends AbstractFacade<Consumption> {
     @Produces({MediaType.APPLICATION_JSON})
     public List<Consumption> findByDate(@PathParam("date") String date) throws ParseException {
         Query query = em.createNamedQuery("Consumption.findByDate");
-        query.setParameter("date", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(date));
+        query.setParameter("date", new SimpleDateFormat("yyyy-MM-dd").parse(date));
         return query.getResultList();
     }
 
@@ -121,7 +123,7 @@ public class ConsumptionFacadeREST extends AbstractFacade<Consumption> {
         query.setParameter("numberOfServings", numberOfServings);
         return query.getResultList();
     }
-    
+
     @GET
     @Path("findByUseridAndFoodname/{userId}/{foodname}")
     @Produces({MediaType.APPLICATION_JSON})
@@ -130,6 +132,30 @@ public class ConsumptionFacadeREST extends AbstractFacade<Consumption> {
         query.setParameter("userId", userId);
         query.setParameter("foodname", foodname);
         return query.getResultList();
+    }
+
+    @GET
+    @Path("findByUseridAndDate/{userId}/{date}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Consumption> findByUseridAndDate(@PathParam("userId") Integer userId, @PathParam("date") String date) throws ParseException {
+        TypedQuery query = em.createQuery("SELECT c FROM Consumption c WHERE c.userId.userId = :userId AND c.date = :date", Consumption.class);
+        query.setParameter("userId", userId);
+        query.setParameter("date", new SimpleDateFormat("yyyy-MM-dd").parse(date));
+        return query.getResultList();
+    }
+
+    @GET
+    @Path("totalCaloriesComsumed/{userId}/{date}")
+    @Produces({MediaType.TEXT_PLAIN})
+    public int totalCaloriesComsumed(@PathParam("userId") Integer userId, @PathParam("date") String date) throws ParseException {
+        int totalCaloriesConsumed = 0;
+        List<Consumption> consumedFoodList = findByUseridAndDate(userId, date);
+        if (!consumedFoodList.isEmpty()) {
+            for (Consumption consumption : consumedFoodList) {
+                totalCaloriesConsumed += consumption.getNumberOfServings() * consumption.getFoodId().getCalorieAmount();
+            }
+        }
+        return totalCaloriesConsumed;
     }
 
     @Override

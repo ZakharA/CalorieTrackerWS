@@ -140,5 +140,5 @@ public class CredentialFacadeREST extends AbstractFacade<Credential> {
     protected EntityManager getEntityManager() {
         return em;
     }
-
+    
 }

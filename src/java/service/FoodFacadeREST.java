@@ -144,5 +144,5 @@ public class FoodFacadeREST extends AbstractFacade<Food> {
     protected EntityManager getEntityManager() {
         return em;
     }
-
+    
 }
