@@ -154,12 +154,12 @@ public class ReportFacadeREST extends AbstractFacade<Report> {
         query.setParameter("date", new SimpleDateFormat("yyyy-MM-dd").parse(date));
         return query.getResultList();
     }
-    
+
     @GET
     @Path("getCaloriesReport/{userId}/{date}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Object getCaloriesReport(@PathParam("userId") Integer userId, @PathParam("date") String date) throws ParseException{
-          List<Report> queryList = findByUseridAndDate(userId, date);
+    public Object getCaloriesReport(@PathParam("userId") Integer userId, @PathParam("date") String date) throws ParseException {
+        List<Report> queryList = findByUseridAndDate(userId, date);
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         for (Report report : queryList) {
             int totalCaloriesConsumed = report.getTotalCalorieConsumed();
@@ -168,14 +168,50 @@ public class ReportFacadeREST extends AbstractFacade<Report> {
             float remainedCalories = (float) ((dailyCalorieGoal + totalCaloriesBurned) - totalCaloriesConsumed);
             JsonObject reportObject = Json.createObjectBuilder()
                     .add("totalCaloriesConsumed", totalCaloriesConsumed)
-                    .add("totalCaloriesBurned",  totalCaloriesBurned)
+                    .add("totalCaloriesBurned", totalCaloriesBurned)
                     .add("remainedCalories", remainedCalories).build();
             arrayBuilder.add(reportObject);
         }
         JsonArray jArray = arrayBuilder.build();
         return jArray;
-    }    
-    
+    }
+
+    @GET
+    @Path("findByUseridAndDatePeriod/{userId}/{startDate}/{endDate}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Report> findByUseridAndDatePeriod(@PathParam("userId") Integer userId, @PathParam("startDate") String startDate, @PathParam("endDate") String endDate) throws ParseException {
+        TypedQuery<Report> query = em.createQuery("SELECT r FROM Report r WHERE r.userId.userId = :userId AND (r.date <= :endDate AND r.date >= :startDate)", Report.class);
+        query.setParameter("userId", userId);
+        query.setParameter("startDate", new SimpleDateFormat("yyyy-MM-dd").parse(startDate));
+        query.setParameter("endDate", new SimpleDateFormat("yyyy-MM-dd").parse(endDate));
+        return query.getResultList();
+    }
+
+    @GET
+    @Path("getCalorieInfoForDatePeriod/{userId}/{startDate}/{endDate}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Object getCalorieInfoForDatePeriod(@PathParam("userId") Integer userId, @PathParam("startDate") String startDate, @PathParam("endDate") String endDate) throws ParseException {
+        List<Report> queryList = findByUseridAndDatePeriod(userId, startDate, endDate);
+        int totalCaloriesConsumed = 0;
+        float totalCaloriesBurned = 0.0f;
+        int totalStepTaken = 0;
+
+        for (Report report : queryList) {
+            totalCaloriesConsumed += report.getTotalCalorieConsumed();
+            totalCaloriesBurned += report.getTotalCalorieBurned();
+            totalStepTaken += report.getTotalStepsTaken();
+        }
+
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        JsonObject reportObject = Json.createObjectBuilder()
+                .add("totalCaloriesConsumed", totalCaloriesConsumed)
+                .add("totalCaloriesBurned", totalCaloriesBurned)
+                .add("totalStepTaken", totalStepTaken).build();
+        arrayBuilder.add(reportObject);
+        JsonArray jArray = arrayBuilder.build();
+        return jArray;
+    }
+
     @Override
     protected EntityManager getEntityManager() {
         return em;
