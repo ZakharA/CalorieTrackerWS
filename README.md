@@ -4,7 +4,8 @@ Server side components of a mobile distributed system for a CalorieTracker app. 
 ## Table of contents
 * [Project description](#project-description)
 * [Technologies](#technologies)
-
+* [DB ER diagram](#db-er-diagram)
+* [REST API](#rest-api)
 
 ## Project description
 
